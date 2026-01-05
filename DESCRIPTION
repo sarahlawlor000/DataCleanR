@@ -1,8 +1,23 @@
 Package: DataCleanR
 Type: Package
-Title: What the Package Does (Title Case)
+Title: Cleans Data to make it usable for analysis
 Version: 0.1.0
 Authors@R: c(
+    person(
+      "Sarah", "Lawlor",
+      email = "sarah.lawlor.2022@mumail.ie",
+      role = c("aut", "cre")
+    ),
+    person(
+      "Jane", "Doe",
+      email = "jane@example.com",
+      role = c("aut", "cre")
+    ),
+    person(
+      "Jane", "Doe",
+      email = "jane@example.com",
+      role = c("aut", "cre")
+    ),
     person(
       "Jane", "Doe",
       email = "jane@example.com",
@@ -11,6 +26,7 @@ Authors@R: c(
   )
 Description: More about what it does (maybe more than one line).
     Continuation lines should be indented.
-License: What license is it under?
+License: GPL (>=3)
+URL: https://github.com/sarahlawlor000/DataCleanR
 Encoding: UTF-8
 LazyData: true
