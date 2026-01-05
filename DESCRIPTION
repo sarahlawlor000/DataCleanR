@@ -9,18 +9,18 @@ Authors@R: c(
       role = c("aut", "cre")
     ),
     person(
-      "Jane", "Doe",
-      email = "jane@example.com",
+      "Hanna", "Dems",
+      email = "hanna.dems.2022@mumail.ie",
       role = c("aut", "cre")
     ),
     person(
-      "Jane", "Doe",
-      email = "jane@example.com",
+      "Julia", "Piekarczyk",
+      email = "julia.piekarczyk.2022@mumail.ie",
       role = c("aut", "cre")
     ),
     person(
-      "Jane", "Doe",
-      email = "jane@example.com",
+      "Aditya", "Sonawane",
+      email = "aditya.sonawane.2023@mumail.ie",
       role = c("aut", "cre")
     )
   )
@@ -30,3 +30,7 @@ License: GPL (>=3)
 URL: https://github.com/sarahlawlor000/DataCleanR
 Encoding: UTF-8
 LazyData: true
+Suggests: 
+    knitr,
+    rmarkdown
+VignetteBuilder: knitr
