@@ -87,10 +87,9 @@ standardise_missing <- function(
       next
     }
 
-    # Leave other column types unchanged (logical, Date, list, etc.)
+    # Leave other column types unchanged (logical, Date, list)
     out[[nm]] <- col
   }
 
   out
 }
-## Finished?
