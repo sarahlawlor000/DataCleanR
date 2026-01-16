@@ -8,7 +8,7 @@
 #' @param data A data frame containing the data to be cleaned.
 #' @param cols Optional vector of column names to check for outliers,
 #' if NULL, all numeric columns are used.
-#' @param k Numeric value controlling how strict the IQR rule is.
+#' @param k Numeric value controlling how strict the IQR rule is (default 1.5).
 #'
 #' @return A data frame with rows containing extreme outliers removed.
 #'
@@ -23,18 +23,26 @@ remove_outliers <- function(data, cols = NULL, k = 1.5){
     stop("Input data must be a data frame.", call. = FALSE)
   }
 
-  if(!is.numeric(k) || length(k) != 1 || k < 0){
+  if(!is.numeric(k) || length(k) != 1 || k < 0 || is.na(k)){
     stop("k must be a single positive numeric value.", call. = FALSE)
   }
 
   if(is.null(cols)){
     cols_idx <- which(vapply(data, is.numeric, logical(1)))
   } else{
-    cols_idx <- cols
+    if(!is.character(cols)){
+      stop("cols must be a vector of column names.", call. = FALSE)
+    }
+
+    cols_idx <- match(cols, names(data))
   }
 
   if(length(cols_idx) == 0){
-    return(data)
+    out <- data
+    attr(out, "rows_removed_outliers") <- 0L
+    attr(out, "outlier_k") <-k
+    class(out) <- c("cleaned_data", class(out))
+    return(out)
   }
 
   keep_rows <- rep(TRUE, nrow(data))
@@ -60,5 +68,11 @@ remove_outliers <- function(data, cols = NULL, k = 1.5){
     keep_rows <- keep_rows & !outlier
   }
 
-  data[keep_rows, , drop = FALSE]
+  out <- data[keep_rows, , drop = FALSE]
+
+  ## for method
+  attr(out, "rows_removed_outliers") <- nrow(data) - nrow(out)
+
+  out
 }
+
