@@ -40,8 +40,15 @@ clean_data <- function(data, cols = NULL, k = 1.5) {
 #-----------------------------------------------
 
 #----------------------------------------------
-  # inspect: Hanna
-  # inspect_data(cleaned)
+  #----------------------------------------------
+  # inspect: Hanna (non-destructive diagnostics)
+  inspection <- inspect_data(cleaned, print = FALSE)
+
+  # store diagnostics for method
+  attr(cleaned, "inspection") <- inspection
+  attr(cleaned, "inspected") <- TRUE
+  #----------------------------------------------
+
 #----------------------------------------------
 
   rows_after <- nrow(cleaned)

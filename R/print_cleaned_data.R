@@ -25,7 +25,8 @@ print.cleaned_data <- function(x, ...){
   if(!is.null(rows_before) && !is.null(rows_after)){
     cat("Rows before: ", rows_before, "\n")
     cat("Rows after: ", rows_after, "\n")
-    cat("Rows removed: ", rows_before-rows_after)
+    cat("Rows removed: ", rows_before - rows_after, "\n")
+
 
   }
 
@@ -43,6 +44,28 @@ print.cleaned_data <- function(x, ...){
   }
 
 #----------------------------------------------------
+  # Hanna
+  inspection <- attr(x, "inspection")
+  inspected  <- attr(x, "inspected")
+
+  if (isTRUE(inspected) && !is.null(inspection)) {
+    cat("\nData diagnostics (Hanna):\n")
+
+    if (!is.null(inspection$na_summary)) {
+      total_na <- sum(inspection$na_summary$n_na)
+      cat("Total missing values detected: ", total_na, "\n")
+    }
+
+    if (!is.null(inspection$outlier_summary)) {
+      total_outliers <- sum(inspection$outlier_summary$n_outliers)
+      cat("Potential outliers detected: ", total_outliers, "\n")
+    }
+
+    if (!is.null(inspection$duplicate_rows)) {
+      cat("Duplicated rows detected: ", inspection$duplicate_rows, "\n")
+    }
+  }
+  #----------------------------------------------------
 
   print.data.frame(x)
   invisible(x)
