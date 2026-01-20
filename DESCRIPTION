@@ -11,17 +11,17 @@ Authors@R: c(
     person(
       "Hanna", "Dems",
       email = "hanna.dems.2022@mumail.ie",
-      role = c("aut", "cre")
+      role = c("aut", "ctb")
     ),
     person(
       "Julia", "Piekarczyk",
       email = "julia.piekarczyk.2022@mumail.ie",
-      role = c("aut", "cre")
+      role = c("aut", "ctb")
     ),
     person(
       "Aditya", "Sonawane",
       email = "aditya.sonawane.2023@mumail.ie",
-      role = c("aut", "cre")
+      role = c("aut", "ctb")
     )
   )
 Description: More about what it does (maybe more than one line).
@@ -32,5 +32,8 @@ Encoding: UTF-8
 LazyData: true
 Suggests: 
     knitr,
-    rmarkdown
+    rmarkdown,
+    testthat (>= 3.0.0)
 VignetteBuilder: knitr
+RoxygenNote: 7.3.3
+Config/testthat/edition: 3
