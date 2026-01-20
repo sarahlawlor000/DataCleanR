@@ -5,6 +5,8 @@
 #' then prints the cleaned dataset.
 #'
 #' @param x a cleaned_data object
+#' @param ... Further arguments passed to or from other methods.
+
 #'
 #' @return The cleaned dataset
 #' @examples
@@ -28,7 +30,17 @@ print.cleaned_data <- function(x, ...){
   }
 
 #----------------------------------------------------
-  # Aadi and hannas codes:
+  # Aadi
+  na_before <- attr(x, "na_before")
+  na_after <- attr(x, "na_after")
+  na_added <- attr(x, "na_added")
+
+  if(!is.null(na_before) && !is.null(na_after) && !is.null(na_added)){
+    cat("\nMissing values standardised (Aadi):\n")
+    cat("NA before: ", na_before, "\n")
+    cat("NA after: ", na_after, "\n")
+    cat("New NA added: ", na_added, "\n")
+  }
 
 #----------------------------------------------------
 

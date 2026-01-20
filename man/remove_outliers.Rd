@@ -12,7 +12,7 @@ remove_outliers(data, cols = NULL, k = 1.5)
 \item{cols}{Optional vector of column names to check for outliers,
 if NULL, all numeric columns are used.}
 
-\item{k}{Numeric value controlling how strict the IQR rule is.}
+\item{k}{Numeric value controlling how strict the IQR rule is (default 1.5).}
 }
 \value{
 A data frame with rows containing extreme outliers removed.

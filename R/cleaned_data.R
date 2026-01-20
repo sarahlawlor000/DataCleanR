@@ -29,7 +29,14 @@ clean_data <- function(data, cols = NULL, k = 1.5) {
 
 #-----------------------------------------------
   # standardise missing values: Aadi
-  # cleaned <- standardise_missing(cleaned)
+  na_before <- sum(is.na(cleaned))
+  cleaned <- standardise_missing(cleaned)
+  na_after <- sum(is.na(cleaned))
+
+  # store info for the print method
+  attr(cleaned, "na_before") <- na_before
+  attr(cleaned, "na_after") <- na_after
+  attr(cleaned, "na_added") <- na_after - na_before
 #-----------------------------------------------
 
 #----------------------------------------------
