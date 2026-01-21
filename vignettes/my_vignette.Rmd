@@ -1,14 +1,27 @@
 ---
 title: "DataCleanR"
-output: rmarkdown::html_vignette
+output: 
+  bookdown::html_document2:
+      base_format: rmarkdown::html_vignette
+      fig_caption: yes
+      number_sections: no
+urlcolor: blue
+header-includes:
+  \usepackage{amsmath}
 vignette: >
-  %\VignetteIndexEntry{my_vignette}
+  %\VignetteIndexEntry{DataCleanR}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
+  %\VignetteDepends{bookdown}
 ---
+
 
 ```{r, include = FALSE}
 knitr::opts_chunk$set(
+  fig.width = 7,
+  fig.height = 5,
+  fig.align = "center",
+  message = FALSE,
   collapse = TRUE,
   comment = "#>"
 )
@@ -18,4 +31,135 @@ knitr::opts_chunk$set(
 library(DataCleanR)
 ```
 
-1234
+## Introduction
+
+__DataCleanR__ is a R package which provides a toolkit for inspecting and cleaning datasets. Six functions are provided:
+
+1. `inspect_data()`: identifies common data quality issues and reports them, (missing values, potential outliers, duplicate rows and column classes)
+
+2. `standardise_missing()`: converts common missing tokens (e.g empty strings, "N/A", "null") into NA
+
+3. `remove_outliers`: removes rows containing extreme outliers using an IQR based rule
+
+4. `clean_data()`: runs an end to end cleaning pipeline, returning a cleaned dataset.
+
+5. `as_cleanData()`: contructs a cleanData object, allowing cleaned data and associated metadata to be stored.
+
+6. `print.cleaned_data()`: provides a dedicated print method for cleaned_data objects, displaying a summary with the cleaned dataset.
+
+Typically, these functions are applied sequentially. This vignette aims to demonstrate a typical workflow of the `DataCleanR` package.
+
+### Installation
+
+__DataCleanR__ will run in Windows, Mac OS X, or Linux. To install it you first need to install [R](https://cran.r-project.org/). Installing [RStudio](https://www.rstudio.com/) as a nice desktop environment for using R is also recommended.
+
+Once in R you can type at the R command prompt:
+
+```{r, eval=FALSE}
+install.packages('devtools')
+devtools::install_github('sarahlawlor000/DataCleanR')
+```
+
+to install the latest development version of the package from the __DataCleanR__ [GitHub page](https://github.com/sarahlawlor000/DataCleanR). 
+
+In either case, if you then type:
+
+```{r, eval=FALSE}
+library(DataCleanR)
+```
+
+It will load in all the __DataCleanR__ functions.
+
+Some features may not yet be fully tested, and occasionally this version might be liable to break when it is in the process of being updated. If you find bugs or want to suggest new features please visit the [GitHub issues page](https://github.com/sarahlawlor000/DataCleanR/issues).
+
+## Example Dataset
+
+To illustrate the workflow, we will create a small dataset containing:
+- missing values
+- empty strings and mixed casing
+- extreme outlier
+
+```{r}
+df <- data.frame(
+id = 1:10,
+group = c("A","A","B","B","B","A","A","B","A","B"),
+status = c("ok", "N/A", " null ", "", "ok", "OK", "not available", "ok", "N/a", " "),
+score = c(10, 12, NaN, 11, 9, 1000, 10, 12, 11, 10),
+stringsAsFactors = FALSE
+)
+
+df
+```
+
+## inspect_data()
+
+The `inspect_data()` function provides a quick summary of the typical data quality issues. 
+
+In the example below, we inspect the data for any issues.
+```{r}
+report <- inspect_data(df)
+```
+The returned object can be explored directly:
+```{r}
+names(report)
+```
+For instance, the outlier summary can be accessed as:
+```{r}
+report$outlier_summary
+```
+
+Similarly duplicate row information, column types and missing data can be accessed:
+```{r}
+report$duplicate_rows
+report$column_types
+report$na_summary
+```
+## standardise_missing()
+
+Real world datasets often encode missing values using strings such as "N/A", "null" or empty strings. The `standardise_missing()` function standardises these to proper `NA` values.
+
+```{r}
+df_na <- standardise_missing(df)
+df_na
+```
+
+## remove_outliers()
+
+The `remove_outliers()` function removes rows containing extreme values in numeric columns, using an IQR based rule. In the example dataset above, the value `1000` in the `score` column is an extreme outlier and typically will be removed.
+
+```{r}
+df_no_out <- remove_outliers(df_na)
+df_no_out
+```
+
+## clean_data()
+
+For convenience, `clean_data()` provides an end to end cleaning pipeline, combining missing value standardisation and outlier removal into a single call.
+
+```{r}
+cleaned <- clean_data(df)
+cleaned
+```
+
+## print.cleaned_data()
+
+A dedicated `print()` method is provided for cleaned objects. This shows the diagnostics of what functions were used on the dataset.
+
+```{r}
+print.cleaned_data(cleaned)
+```
+
+## as_cleanData()
+
+The `as_cleanData()` function contructs a `cleanData` objet. This can be useful if you want to wrap raw data in a standard class before running cleaning steps, or to attach metadata in a structured way.
+
+```{r}
+cd <- as_cleanData(df)
+class(cd)
+
+```
+
+In practice, the most common pattern is:
+- Use `inspect_data()` early to understand what needs attention.
+- Use `clean_data()` for a simple, repeatable default pipeline.
+- Use `standardise_missing()` and `remove_outliers()` directly when you need more control.
