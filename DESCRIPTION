@@ -1,6 +1,6 @@
 Package: DataCleanR
 Type: Package
-Title: Cleans Data to make it usable for analysis
+Title: Tools for Inspecting and Cleaning Data
 Version: 0.1.0
 Authors@R: c(
     person(
@@ -24,8 +24,13 @@ Authors@R: c(
       role = c("aut", "ctb")
     )
   )
-Description: More about what it does (maybe more than one line).
-    Continuation lines should be indented.
+Description: Provides a set of functions for inspecting and cleaning datasets 
+    prior to analysis. The package supports identification of common
+    data quality issues, including missing value patterns, outliers, duplicate
+    rows, and column types. It also provides tools for standardising missing value
+    representations, removing outliers using an interquartile range (IQR) rule,
+    and running a simple end to end data cleaning pipeline. Cleaned data can be
+    stored and printed using dedicated S3 classes and methods.
 License: GPL (>=3)
 URL: https://github.com/sarahlawlor000/DataCleanR
 Encoding: UTF-8
