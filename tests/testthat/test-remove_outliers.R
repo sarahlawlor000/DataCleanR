@@ -10,7 +10,7 @@ test_that("does nothing when there are no numeric columns", {
   expect_identical(out, df)
 })
 
-test_that("returns same data when fewer than 4 non-missing values", {
+test_that("returns same data when fewer than 4 non missing values", {
   df <- data.frame(x = c(1, 2, NA))
   out <- remove_outliers(df)
   expect_identical(out, df)
@@ -22,10 +22,10 @@ test_that("can check only selected columns by name", {
     y = c(10, 11, 12, 13)
   )
   out <- remove_outliers(df, cols = "y")
-  expect_identical(out, df)  # no outliers in y
+  expect_identical(out, df)
 })
 
-test_that("errors on non-data-frame input", {
+test_that("errors on non dataframe input", {
   expect_error(remove_outliers(1:10), "data frame")
 })
 
