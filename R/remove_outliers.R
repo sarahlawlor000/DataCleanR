@@ -2,13 +2,13 @@
 #'
 #' This function removes rows from a data frame if one or more numeric
 #' variables contain extreme values based on the interquartile range (IQR).
-#' All numeric columns are checked but specific columns
-#' can be supplied by the user.
+#' By default, it checks all numeric columns, but you can choose specific
+#' columns using cols.
 #'
 #' @param data A data frame containing the data to be cleaned.
-#' @param cols Optional vector of column names to check for outliers,
-#' if NULL, all numeric columns are used.
-#' @param k Numeric value controlling how strict the IQR rule is (default 1.5).
+#' @param cols Optional vector of column names or column positions to check.
+#' If NULL, all numeric columns are used.
+#' @param k Numeric value controlling how strict the IQR rule is.
 #'
 #' @return A data frame with rows containing extreme outliers removed.
 #'
@@ -19,60 +19,67 @@
 #' @export
 remove_outliers <- function(data, cols = NULL, k = 1.5){
 
-  if(!is.data.frame(data)){
+  if (!is.data.frame(data)) {
     stop("Input data must be a data frame.", call. = FALSE)
   }
 
-  if(!is.numeric(k) || length(k) != 1 || k < 0 || is.na(k)){
+  if (!is.numeric(k) || length(k) != 1 || k < 0) {
     stop("k must be a single positive numeric value.", call. = FALSE)
   }
 
-  if(is.null(cols)){
+  # choose columns
+  if (is.null(cols)) {
     cols_idx <- which(vapply(data, is.numeric, logical(1)))
-  } else{
-    if(!is.character(cols)){
-      stop("cols must be a vector of column names.", call. = FALSE)
+  } else {
+
+    if (is.character(cols)) {
+      missing_cols <- setdiff(cols, names(data))
+
+      if (length(missing_cols) > 0) {
+        stop(
+          paste("Unknown column(s):", paste(missing_cols, collapse = ", ")),
+          call. = FALSE
+        )
+      }
+      cols_idx <- match(cols, names(data))
+    } else if (is.numeric(cols)) {
+      cols_idx <- cols
+    } else {
+      stop("cols must be NULL, a character vector or a numeric vector.", call. = FALSE)
     }
 
-    cols_idx <- match(cols, names(data))
+    cols_idx <- cols_idx[cols_idx >= 1 & cols_idx <= ncol(data)]
+    cols_idx <- cols_idx[vapply(data[cols_idx], is.numeric, logical(1))]
   }
 
-  if(length(cols_idx) == 0){
-    out <- data
-    attr(out, "rows_removed_outliers") <- 0L
-    attr(out, "outlier_k") <-k
-    class(out) <- c("cleaned_data", class(out))
-    return(out)
+  if (length(cols_idx) == 0) {
+    return(data)
   }
 
   keep_rows <- rep(TRUE, nrow(data))
 
-  for(j in cols_idx){
+  for (j in cols_idx) {
     x <- data[[j]]
     x_no_na <- x[!is.na(x)]
 
-    if(length(x_no_na) < 4){
+    if (length(x_no_na) < 4) {
       next
     }
 
-    q1 <- stats::quantile(x_no_na, 0.25)
-    q3 <- stats::quantile(x_no_na, 0.75)
-    iqr <- q3-q1
+    q1 <- stats::quantile(x_no_na, 0.25, names = FALSE)
+    q3 <- stats::quantile(x_no_na, 0.75, names = FALSE)
+    iqr <- q3 - q1
 
-    lower <- q1-k*iqr
-    upper <- q3+k*iqr
+    lower <- q1 - k * iqr
+    upper <- q3 + k * iqr
 
-    outlier <- x < lower | x > upper
+    outlier <- (x < lower) | (x > upper)
     outlier[is.na(outlier)] <- FALSE
 
     keep_rows <- keep_rows & !outlier
   }
 
-  out <- data[keep_rows, , drop = FALSE]
-
-  ## for method
-  attr(out, "rows_removed_outliers") <- nrow(data) - nrow(out)
-
-  out
+  data[keep_rows, , drop = FALSE]
 }
+
 
